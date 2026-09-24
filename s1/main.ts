@@ -1,25 +1,23 @@
 import { Conta } from './Conta.ts';
+import { ContaCorrente } from './ContaCorrente.ts';
+import { ContaPoupanca } from './ContaPoupanca.ts';
 
-const conta = new Conta('0001', 'Ana Lima');
-conta.deposit(100); 
-conta.withdraw(30);
-console.log('Saldo:', conta.balance);
+const cc = new ContaCorrente('0001', 'Ana Lima');
+const cp = new ContaPoupanca('0002', 'Bruno Souza');
 
-// Quatro tentativas de burlar as regras
-const tentativas = [
-  () => { conta.balance = -5000; },
-  () => conta.deposit(-50),
-  () => conta.withdraw(1000),
-  () => { conta.owner = ''; },
-];
+cc.deposit(100); // depositar() foi herdado de Conta
+cc.withdraw(400); // só passa por causa do limite
+console.log('CC saldo:', cc.balance);
 
-for (const tentar of tentativas) {
-  try {
-    tentar();
-  } catch (e) {
-    console.log('Bloqueado →', e instanceof Error ? e.message : String(e));
-  }
+cp.deposit(1000);
+console.log('Rendeu:', cp.render(), '→ saldo:', cp.balance);
+
+try {
+  cp.withdraw(5000); // poupança não tem limite
+} catch (e) {
+  console.log('Poupança →', e instanceof Error ? e.message : e);
 }
 
-console.log('Saldo continua:', conta.balance);
-console.log(conta); // repare: #saldo e #titular não aparecem
+console.log(cc instanceof ContaCorrente, cc instanceof Conta);
+// A cadeia de protótipos, à mostra:
+console.log(Object.getPrototypeOf(ContaCorrente.prototype) === Conta.prototype);

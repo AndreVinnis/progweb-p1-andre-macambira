@@ -37,11 +37,16 @@ export class Conta {
         this.#balance += amount;
 
     }
+
+    saldoDisponivel() {
+        return this.#balance;
+    }
+
     withdraw(amount: number): void {
         if (amount <= 0) {
             throw new Error("O valor do saque deve ser positivo!");
         }   
-        if(amount > this.#balance) {
+        if(amount > this.saldoDisponivel()) {
             throw new Error("Saldo insuficiente.");
         }
         this.#balance -= amount;
