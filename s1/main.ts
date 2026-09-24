@@ -2,22 +2,30 @@ import { Conta } from './Conta.ts';
 import { ContaCorrente } from './ContaCorrente.ts';
 import { ContaPoupanca } from './ContaPoupanca.ts';
 
-const cc = new ContaCorrente('0001', 'Ana Lima');
-const cp = new ContaPoupanca('0002', 'Bruno Souza');
+const contas = [
+  new ContaCorrente('0001', 'Ana Lima'),
+  new ContaPoupanca('0002', 'Bruno Souza'),
+];
 
-cc.deposit(100); // depositar() foi herdado de Conta
-cc.withdraw(400); // só passa por causa do limite
-console.log('CC saldo:', cc.balance);
+    contas.forEach((c) => c.deposit(1000));
 
-cp.deposit(1000);
-console.log('Rendeu:', cp.render(), '→ saldo:', cp.balance);
-
-try {
-  cp.withdraw(5000); // poupança não tem limite
-} catch (e) {
-  console.log('Poupança →', e instanceof Error ? e.message : e);
+// Mesma mensagem, respostas diferentes: quem decide é o objeto, não um if
+function fecharMes(listaDeContas: Conta[]) {
+    for (const conta of listaDeContas) {
+        let tax: number;
+        if(conta instanceof ContaCorrente || conta instanceof ContaPoupanca) {
+            tax = conta.monthlyTax();
+            if (tax > 0) conta.withdraw(tax);
+            console.log(`${conta} (tarifa: R$ ${tax.toFixed(2)})`);
+        }
+    }
 }
 
-console.log(cc instanceof ContaCorrente, cc instanceof Conta);
-// A cadeia de protótipos, à mostra:
-console.log(Object.getPrototypeOf(ContaCorrente.prototype) === Conta.prototype);
+fecharMes(contas);
+
+// A abstração protegida: ninguém cria uma "conta genérica"
+try {
+    new Conta('0003', 'Carla Dias');
+} catch (e) {
+    console.log('Erro esperado →', e instanceof Error ? e.message : String(e));
+}

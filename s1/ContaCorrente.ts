@@ -11,4 +11,8 @@ import { Conta } from './Conta.ts';
     saldoDisponivel() {
         return this.balance + this.#limit;
     }
+
+    monthlyTax() {
+        return 12.9;
+    }
 }

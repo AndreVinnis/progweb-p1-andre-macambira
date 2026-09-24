@@ -5,6 +5,9 @@ export class Conta {
 
 
     constructor(number: string, owner: string) {
+        if (new.target === Conta) {
+            throw new Error('Conta é abstrata: crie ContaCorrente ou ContaPoupanca');
+        }
         this.#number = number;
         this.#balance = 0;
         this.#owner = owner;
@@ -52,4 +55,13 @@ export class Conta {
         this.#balance -= amount;
     }
 
+    // "método abstrato": cada tipo de conta TEM de dizer quanto cobra
+    monthlyTax() {
+        throw new Error('tarifaMensal() precisa ser implementado na subclasse');
+    }
+
+    // sobrescrevendo um método que veio de Object.prototype
+    toString() {
+        return `${this.constructor.name} ${this.number} · ${this.owner} · R$ ${this.balance.toFixed(2)}`;
+    }
 }

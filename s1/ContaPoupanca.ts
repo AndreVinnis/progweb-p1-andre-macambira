@@ -14,4 +14,8 @@ export class ContaPoupanca extends Conta {
         if (rendimento > 0) this.deposit(rendimento); // usa a interface pública da mãe
         return rendimento;
     }
+
+    monthlyTax() {
+        return 0;
+    }
 }
